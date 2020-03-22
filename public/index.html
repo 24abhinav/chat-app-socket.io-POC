@@ -14,12 +14,16 @@
         <section>
             <div class="main-div">
                 <div class="sidebar">
-                    <h3>GROUP PEAPLE</h3>
+                    <div id="OwnDetails">
+                    </div>
+                    <h3>GROUP MEMBERS</h3>
 
                     <div class="peaple">
                         <ul id="userList">
                         </ul>
                     </div>
+
+                    <button id="leaveBtn" class="leaveBtn" onclick="leaveChat()">Leave Conversation</button>
                 </div>
 
 
@@ -28,7 +32,7 @@
                         <div class="messages">
                         </div>
                     </div>
-                    <div class="footer">
+                    <div class="footer" id="footer">
                         <textarea id="message" placeholder="Enter Message Here"></textarea>
                         <button class="sendBtn" onclick="sendMessage()">Send</button>
                         <button class="locBtn" onclick="sendLocation()">Send Location</button>

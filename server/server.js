@@ -19,12 +19,25 @@
 
         socket.on('newUser', (newUserData) => {
             users.push(newUserData.name);
+            newUserData['id'] = users.length - 1;
             socket.broadcast.emit('newUser', newUserData);
-            socket.emit('getConnectedUsers', users);
+            socket.emit('getConnectedUsers', {users, id: newUserData.id});
         });
 
         socket.on('newMessage', (msgObject) => {
             socket.broadcast.emit('newMessage', msgObject);
+        });
+
+        socket.on('leaveConversation', (payload) => {
+            users.forEach((element, index) => {
+                if(element === payload.name) {
+                    users.splice(index, 1);
+                }
+            });
+            socket.broadcast.emit('userLeft', {
+                name: payload.name,
+                id: payload.removeId
+            });
         });
 
 
@@ -45,3 +58,4 @@
     }
 
 } ());
+

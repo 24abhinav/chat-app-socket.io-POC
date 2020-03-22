@@ -1,5 +1,7 @@
 let socket = io();
 let userName = '';
+let myId = '';
+let status = true;
 
 function basicDetails() {
     userName = prompt('Enter Your Name');
@@ -8,9 +10,9 @@ function basicDetails() {
         return;
     }
 
+    userTemplate(userName);
     const newUserDetails = {
         name: userName,
-        time: moment(new Date().getTime()).format('LT'),
     };
     welcomeMessageTemplate(userName);
     socket.emit('newUser', newUserDetails);
@@ -24,7 +26,6 @@ function sendMessage() {
     document.getElementById('message').value = '';
     const messageObj = {
         name: userName,
-        time: moment(new Date().getTime()).format('LT'),
         message
     };
     socket.emit('newMessage', messageObj);
@@ -44,6 +45,17 @@ function sendLocation() {
     });
 }
 
+function leaveChat() {
+    const payload = {
+        removeId: myId,
+        name: userName
+    }
+    status = false;
+    socket.emit('leaveConversation', payload);
+    removeEveryThing(['leaveBtn', 'footer']);
+    userLeaveTemplate({name: 'You'});
+}
+
 // Listeners
 
 socket.on('newUser', (newUserName) => {
@@ -51,19 +63,33 @@ socket.on('newUser', (newUserName) => {
 });
 
 socket.on('newMessage', (newMessage) => {
-    messageTemplate(newMessage);
+    if(status)
+        messageTemplate(newMessage);
 });
 
 socket.on('getConnectedUsers', (userList) => {
-    userList.forEach(element => {
-        addPeapletoSideNav(element);
+    userList.users.forEach((element, idx) => {
+        addPeapletoSideNav(element, idx);
     });
+    myId = userList.id + userName
+});
+
+socket.on('userLeft', (userName) => {
+    userLeaveTemplate(userName);
 });
 
 
 // Templates
 
+function userTemplate(name) {
+    const p = document.createElement("p");
+    p.innerHTML = name;
+    document.getElementById('OwnDetails').appendChild(p);
+}
+
 function messageTemplate(messageData) {
+    const time = moment(new Date().getTime()).format('LT');
+
     var div = document.createElement("div");
     div.setAttribute('class', 'messageBody');
 
@@ -72,7 +98,7 @@ function messageTemplate(messageData) {
     p.innerHTML = messageData.name
 
     var span = document.createElement("span");
-    span.innerHTML = messageData.time
+    span.innerHTML = time
 
     p.appendChild(span);
 
@@ -97,11 +123,23 @@ function messageTemplate(messageData) {
 
 
 function newUserTemplate(userData) {
+    const time = moment(new Date().getTime()).format('LT');
     var p = document.createElement('p');
     p.setAttribute('class', 'newUser');
-    p.innerHTML = `${userData.name} has joined this conversation at ${userData.time}`;
+    p.innerHTML = `${userData.name} has joined this conversation at ${time}`;
     document.getElementsByClassName('messages')[0].appendChild(p);
-    addPeapletoSideNav(userData.name);
+
+    addPeapletoSideNav(userData.name, userData.id);
+}
+
+function userLeaveTemplate(userObject) {
+    const time = moment(new Date().getTime()).format('LT');
+    var p = document.createElement('p');
+    p.setAttribute('class', 'newUser');
+    p.setAttribute('id', 'userLeft');
+    p.innerHTML = `${userObject.name} left this conversation at ${time}`;
+    document.getElementsByClassName('messages')[0].appendChild(p);
+    removeNode(userObject.id);
 }
 
 function welcomeMessageTemplate(name) {
@@ -112,9 +150,23 @@ function welcomeMessageTemplate(name) {
 }
 
 
-function addPeapletoSideNav(name) {
+function addPeapletoSideNav(name, id) {
     const li = document.createElement('li');
+    li.setAttribute('id', `${id}${name}`);
     li.innerHTML = name;
     document.getElementById('userList').appendChild(li);
 }
 
+function removeNode(id) {
+    var elem = document.getElementById(id);
+    if(elem) {
+        elem.parentNode.removeChild(elem);
+    }
+
+}
+
+function removeEveryThing(list) {
+    list.forEach(element => {
+        removeNode(element);
+    });
+}
