@@ -76,6 +76,12 @@
     letter-spacing: 1px;
 }
 
+.ownMessaage {
+    text-align: right;
+    padding-right: 23px;
+    margin-bottom: 20px;
+}
+
 .peaple {
     padding-top: 20px;
     height: 70%;

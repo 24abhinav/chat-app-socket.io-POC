@@ -2,43 +2,38 @@
 
 <html>
     <head>
-        <title>Chat App</title>
-        <link rel="stylesheet" href="style.css">
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="/js/script.js"></script>
+        <script src="js/index.js"></script>
         <script src="/js/moment.js"></script>
-
+        <link rel="stylesheet" href="index.css">
     </head>
-
-    <body onload="basicDetails()">
+    <body>
         <section>
             <div class="main-div">
-                <div class="sidebar">
-                    <div id="OwnDetails">
-                    </div>
-                    <h3>GROUP MEMBERS</h3>
+                <div class="newRoom">
+                    <h2>Create A new Room</h2>
+                    <div class="form">
+                        <label>Room Name</label>
+                        <input type="text" id="newRoomName">
 
-                    <div class="peaple">
-                        <ul id="userList">
-                        </ul>
-                    </div>
+                        <label>Room Id</label>
+                        <input type="text" placeholder="Auto Created" disabled>
 
-                    <button id="leaveBtn" class="leaveBtn" onclick="leaveChat()">Leave Conversation</button>
-                </div>
-
-
-                <div class="body">
-                    <div class="message-body">
-                        <div class="messages">
-                        </div>
-                    </div>
-                    <div class="footer" id="footer">
-                        <textarea id="message" placeholder="Enter Message Here"></textarea>
-                        <button class="sendBtn" onclick="sendMessage()">Send</button>
-                        <button class="locBtn" onclick="sendLocation()">Send Location</button>
+                        <button onclick = "createNewRoom()">Create Room</button>
                     </div>
                 </div>
+                <div class="newRoom">
+                    <h2>Join Existing Room</h2>
 
+                    <div class="form">
+                        <label>Room Name</label>
+                        <input type="text" id="existingRoomName">
+
+                        <label>Room Id</label>
+                        <input type="text" id="roomId">
+
+                        <button onclick = "joinRoom()">Join Room</button>
+                    </div>
+                </div>
             </div>
         </section>
     </body>

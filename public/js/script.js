@@ -19,6 +19,7 @@ function basicDetails() {
 }
 
 function sendMessage() {
+    debugger
     const message = document.getElementById('message').value;
     if(!message) {
         return;
@@ -29,7 +30,8 @@ function sendMessage() {
         message
     };
     socket.emit('newMessage', messageObj);
-    messageTemplate(messageObj);
+    messageTemplate(messageObj, 'ownMessaage');
+    scrollToView();
 }
 
 function sendLocation() {
@@ -54,6 +56,12 @@ function leaveChat() {
     socket.emit('leaveConversation', payload);
     removeEveryThing(['leaveBtn', 'footer']);
     userLeaveTemplate({name: 'You'});
+    scrollToView();
+}
+
+function scrollToView() {
+    const view = document.getElementById('messages').lastElementChild;
+    view.scrollIntoView();
 }
 
 // Listeners
@@ -87,11 +95,15 @@ function userTemplate(name) {
     document.getElementById('OwnDetails').appendChild(p);
 }
 
-function messageTemplate(messageData) {
+function messageTemplate(messageData, className) {
     const time = moment(new Date().getTime()).format('LT');
 
     var div = document.createElement("div");
     div.setAttribute('class', 'messageBody');
+
+    if(className) {
+        div.setAttribute('class', className);
+    }
 
     var p = document.createElement("p");
     p.setAttribute('class', 'user');
@@ -130,6 +142,7 @@ function newUserTemplate(userData) {
     document.getElementsByClassName('messages')[0].appendChild(p);
 
     addPeapletoSideNav(userData.name, userData.id);
+    scrollToView
 }
 
 function userLeaveTemplate(userObject) {
