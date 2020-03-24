@@ -3,13 +3,16 @@ let userName = '';
 let myId = '';
 let status = true;
 
+
+
 function basicDetails() {
-    userName = prompt('Enter Your Name');
-    if(!userName) {
-        location.reload();
+    const userData = JSON.parse(localStorage.getItem('roomObject'));
+    if(!userData) {
+        location.href = '/';
         return;
     }
-
+    userName = userData.userName;
+    localStorage.removeItem('roomObject');
     userTemplate(userName);
     const newUserDetails = {
         name: userName,
@@ -43,7 +46,7 @@ function sendLocation() {
         };
 
         socket.emit('newMessage', messageObj);
-        messageTemplate(messageObj);
+        messageTemplate(messageObj, 'ownMessaage');
     });
 }
 

@@ -12,6 +12,8 @@
 
     const users = [];
 
+    const rooms = [];
+
     app.use(express.static(publicPath));
 
 
@@ -39,6 +41,15 @@
                 id: payload.removeId
             });
         });
+
+        socket.on('checkRoomDetails', (payload) => {
+            let status = true;
+            if(payload.roomName !== 'blue' || payload.roomId !== 'blue@7Dui') {
+                status = false
+            }
+
+            socket.emit('roomStatus', status);
+        })
 
 
         socket.on('disconnect', () => {
